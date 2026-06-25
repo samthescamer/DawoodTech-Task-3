@@ -1,0 +1,66 @@
+#Import all the tools/libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import r2_score
+
+
+#Loading California Housing Dataset
+df = pd.DataFrame(fetch_california_housing().data, columns=fetch_california_housing().feature_names)
+
+#Data inspection and Basic Cleaning
+print(df.head())
+print(df.describe())
+print(df.isnull().sum())
+print(df.info())
+
+#Splitting prepared dataset into training sets in an 80/20 ratio
+df = fetch_california_housing(as_frame=True).frame
+
+X = df.drop('MedHouseVal', axis=1) #MedHouseVal is the Target Variable, so it is dropped
+Y = df['MedHouseVal']
+
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42) #0.2 since 20% is for testing
+
+#Train Linear Regression Model
+model = LinearRegression()
+model.fit(X_train, Y_train)
+
+#Make Predictions Using the Linear Regression Model
+Y_prediction = model.predict(X_test)
+results = pd.DataFrame({'Actual': Y_test, 'Predicted': Y_prediction})
+
+print(results.head())
+
+#Performance Metric Calculation
+print('PERFORMANCE METRICS ---')
+print('Root Mean Square Error = ', np.sqrt(mean_squared_error(Y_test, Y_prediction)))
+print('Mean Absolute Error = ', mean_absolute_error(Y_test, Y_prediction))
+print('R2 Score = ', r2_score(Y_test, Y_prediction))
+
+#Scatterplot
+plt.figure(figsize=(8, 6))
+plt.scatter(Y_test, Y_prediction, alpha = 0.5)
+
+#Line y=x on graph
+min_val = min(Y_test.min(), Y_prediction.min())
+max_val = max(Y_test.max(), Y_prediction.max())
+
+plt.plot([min_val, max_val], [min_val, max_val], linewidth = 2, color = 'red', label = 'y=x', linestyle = '--')
+
+#Labeling axes, adding titles and grid
+plt.xlabel('Actual House Value')
+plt.ylabel('Predicted House Value')
+plt.legend()
+plt.title('Actual House Value vs Predicted House Value')
+plt.grid(alpha = 0.3)
+
+plt.xlim(0,5.5)
+plt.ylim(0,5.5)
+
+plt.show()
