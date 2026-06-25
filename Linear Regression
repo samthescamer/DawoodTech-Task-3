@@ -62,4 +62,14 @@ plt.grid(alpha = 0.3)
 plt.xlim(0,5.5)
 plt.ylim(0,5.5)
 
+plt.savefig('predicted_vs_actual.png',dpi = 600,bbox_inches='tight')
 plt.show()
+
+#Interpretation of Models performance
+print('''
+--- Interpretation of Model's performance ---
+The model achieved moderately accurate predictive performance, indicated by
+the RMSE, MAE and R2 scores. The R2 score suggests that most of the variation 
+in the house values was explained by the features. Deviations from the y=x
+line indicate prediction errors
+''')
